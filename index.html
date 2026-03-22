@@ -5,10 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Fyerai - AI-Powered Nutrition Intelligence</title>
     <meta name="description" content="AI-powered nutrition intelligence. Instantly analyze food ingredients and make healthier choices.">
-    <link rel="icon" type="image/webp" href="logo.webp">
+    <link rel="icon" type="image/png" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAACXBIWXMAAAsTAAALEwEAmpwYAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAANcSURBVHgB7VdNaBNBFH5vN5vdJE1Tm6ZWGxVaFVEQxYOgBy+ePHjx4qUHLyJ48ODBk1cPevQieBC8eBAvHrx4EQ+CIIIg/lTrT2uN1tY2SZO0SbPZ3Xkzm91ks5tNY4X2QR6zmfm+973vvXkzswR/of4L/F/wD0BEXwBsB7AdwHYAOwBsBdAFoANAO4BWAC0AmgE0AWgE0ACgHkAdgFoANQCqAVQBqARQAaAcQBmAUgAlAIoB=">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Outfit:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <script src='https://cdn.jsdelivr.net/npm/tesseract.js@4/dist/tesseract.min.js'></script>
     <style>
         * {
             margin: 0;
@@ -1011,7 +1012,7 @@
     <nav>
         <div class="container" style="width: 100%; max-width: 1400px; display: flex; justify-content: center; align-items: center; padding: 0;">
             <div class="logo-wrapper">
-                <img src="logo.webp" alt="Fyerai Logo" class="logo-img">
+                <img src="data:image/webp;base64,UklGRl4hAABXRUJQVlA4IFIhAACwmwCdASoAAn4BPjEYi0QiIaKRK3x0KAMEs7d+I0OAoYcJ9RP5b9Ru4/c/4f+0/uH7ht1/z39w8330AfB/WHmTeT/rP/A/tn+L/ZP5m/7r9fPej+jvYE/WD/nf4j1mfVr5g/2g/bz3if9l+4Xu5/s3qD/1r/Tf//10vY+/cz2Gf3a9OD9zvhu/rX/Q/b72k///2evR3+CfsN60+gX9u/bL2h603sr1S4oPx77T/mPy0/LL5e74+AF+N/zf/L/lt+YXH+TaeoF7nfVP9P9yHqAf3vob4gH6sf8Pyn/C1oBfzv+vf9n/Ie7R/Y/+r/T/ll7if0D/Q/9z/OfAf/Lf6//tf77+9Xe7/c72Zv2AEko+JpVYiHuetQIeCPGJjnQYfqWlViHS9PFl3H2LAGSujj0jF2q5zbhsGgy4fdI5wb1Nu9MroOq/25NB/6KF/sRwEenERTHlBAoM/+1DXlAT9kYPRxFaVDEJ5p0kz6c0q4e3NifWSWGldV7XlSP+NphS+Xg3ZxC/+PW9RRtU1hJhf1HEPoyYviUy5haZefh6As7FYX1hAZ8LGykQBSlOHok7Ao5uDPkqsw4hi5I+fdiRLDw2FmpAmOM3BxqzkarUs/OGqGGUYMWLcMCRvU5f0n9lBmeTvjnTnJutOtSfdSML/Kr6UjiGgGVuOEXXIB7N2y4MafI8iHxOn1Ner/yhzPknp/5TuoayCssoLRR766zFCSXS502gouBKviyU/sNKVY0IQ5SDI1ZiNeiHonsIZvTZrSpytCRgcr1OlDhjGP0D3IEi2uUUqrn98AiUmCXEZ5MLERH6cPszO2FhmQwxrAtlk1Z1zf1epPEhcX1oueJl2xisiYB1nB8Y5aqRJg1DfzaOyyu1whk2uwwur9ImmDGF5YrJnUIfdWvJfu290WRWiNC8AcJPuaphLDHxB21FkzJ2wP+wPR09dCiFa+W7R4vqcICmTXCTjGkfotY2VDV/aD3t4cUrbV6w1SjmKtrAWANu9sT8Dig499IuNQiR1jH2GzWL4Tf4JRrT7lFMDD05sYv07P3XFgS7MFbg7Owac9Gzf4uehzjcUkPR260XI/CF0dJJAxmQSg5M3d3k6VQlWf/H7RjTKw2cA3UaXhcfIpQ/8rt8se/Hv/9/OwLXOoysU9HcDnKqJ++0Yi+9gmI5YFW6fYKkfyQQcq7i2x937v/r1FN4eyzy1tR4qLeyCP/ZgfbouZVOiZnIkz5C/Kg69ka+xOkPgibnlGwdKSv3TILsjmDl6ug+JlHoQXOdEUD7Y3RL6v2RvQoLzU3N5GKmPZdjM0yBgGO88qfn33Ch7FU8fp/XXeusZnO7lD8lL+Zo/Fj0v///6d1HLbDDa1hDGtYK8AZM6gEHaWqizWPcuXroH+tg27QabcL1GLnhpjyOoD8TVdDqUJ3xzL5OLwf4cTouLKlySpC97O2gKmOERa1xwOcCLOokohbWSFPJ2JAAH4p5xy8tMjKN9Gs9X935AF0vn23ICXm+rF5AR47dOPP425oIMErtKOoU2VLpo1Le8SI7VmVi9QAgI8dtESABNbpXhWTcXd5XuZSIAQEeRIdVfCt4CIJiNm0lDXICp8OQzkBRD4miJk7wQTuTcrPJMWEAev/ooPznxurQI9ganuMWQgNj9HmmCoQ9xwHn3x/YZya0nqjaRaAA/v5OdrN5BrPzK5RzZgAY8fsBMUbIYVi/NHoG+W259X6Yd6pGOqZD3VZuPUuFcIqL/XbRclfa8nrjiEmigKbh7iHrL34tXiUY/Txy7CKaqGIlaKKg4AxVlcqbYj3XlyNhrZGVMfy5WaTGvXBQfSWMkeGpgMvMNOz8aAJOXPU12VbZHsq3cEBTQlUA8JhC3KPYu+Lk2+c3chWF8R1OVAAJ1MdcAhXVqoS1Q30Z9QCXIUmD2ZD2AhrbRNZ55bkg4VGCCqrJ8ZQMx4JU/9Z6UL+Q/rZpeg+bBTjQt+GnklyALaZz+pjF2k+ASK671j4yOhI8waDAtudSAsuafn+SVGoy1v0bULq3fwG/Dc1dFSp+8NAzei48FDwImUHWWXOMI6vRb9+AMaownVIGXS9UkBD91rDvYr46WR6tKuBTjtXzEC2FFbQMFtAjeNaEceHad/2mForbgLE2a+9q6zBNOOjx+p6sg89hbSRlfrpVk3SSOl2ZJG77zkgpEYPuk1Q8RC6jS28nQMuJdTPszMGCUnSDpvRWhLdGJptkeHZGS60xyAbsnEqOllkLBbyIaE3HBFhI8tgcjDEEIrwDGNPGpIaQSqpkuYFZv3wuGLgW/z5Isoma7nrD1zCwZ5DTKZQgE7JoRWAkNM+cjGkI1VuC0a5pMOBzwy9C4frddc4Y5p9YCe7DQOtWscSxm96QFB7SHfnwkJHUf5PfwvxbHCWkzG1y1jKB+xdDu09FEq8BdtDKnlKwYdamBcdYDg1vEcD4u0VYwg4hsNbGltaSYYKDhpoi04/T5DXB06NIUtNGvFPjL6ytX7yxk4BoCU9aPZ+OCmRgXYNQKqruj+L5MObC1oYmnlpl3cUZ/1prH/ANmbUrhCQer5iOL6LuisWV/CwUWBwEMjaWnZPqg18RVSGM+IW+zIybtKA1elltcfUFdmL/j+LEqWV6pAIfIun6m1kL2Z04I989lg5xzi0o3hdlvtQjQL5Gf1SSEoqxwrTchcxTEvuLrwLhxopTXmrG2wzlYMM+KV4QxL8ygCFkXKcT+uB2PuVGAaXEWbeZYdpEIWfGPl1AgVXPvukgPdE9HQyOLVHIWy3gkLvb3+OJ+y13aaJVOdEvtxbI3+SXwG7Ib/vKSDT88qvMZVoktVGg92QFBC5UDj3W8NkxzRPGgRtbRt0qVTij1jmcvlHdFT/eKiyBJhRWwNV9dT7iaJWc3tockuOT56lHmPpElIMT9/1eizeZoC3zP/vu8G/3x8iyqOm1KHfOqkwYGDfmBY9COR+hgay65u7O3x8JKs+HCX3d5f4Mrx24IJJhLXA68M04Ta75Z3vwC31vuEkurX+7TxCm6GXN/XeuiVzCdoHwxRTWSHQHIUIEc7tYyY2P1/3oSe+EXjHtzmS0KPlJxPdsbR1VzWQf1/OMZGlZzVxCEOPH+67D+6Uzvs60t4oK/GtnXtqpnVkv5hlbgO6JEimHxkjuhFih4usnOYbg60kmtiri2LLXn2qToA6gB2r5sGJouhL7UNTGEefgTIR34P23Vp0ar9QBqDJnLljUMZuFGw0stc7OehUXULaOZS8U+Rs+Ze5f3TAHkocoSK6h44cGYEre4i+Qmwm8Mf1GxNmj0xXoy6fhSIJoVEzwVve5RYFrLaiJuy1mnyK/0ui6wVNLdEyyzEVpFuauBOwX2nTP6hWNKxOCn1s6SHCqrpsHBhE1iSYGyL6cPhEWwvU0PWhnYHHiZ6svmX86qVNqiwVCT4CkaA1x4zWOaXSGOy66xAjf+RXaP3HzeG97lgReUblSx5srSA8uD8LqY4wnhTFSi6LTO9V2YU/hRn7G9tUsBryHszLfzrorZ4W56SQlgjJFaJ75DBZi5EiW+u/aqAvbKdGlCJZAX5nWwfY3+GUWnmu7cpV3GbsJ0wixwlg+vZ9pIvTlM6XBrRM1KtfoTD8E+Li5e//uL81cyoHS7gyPKXJyrBsjei8E6018mctHmI0UI6Dyle5z6guOoYsPTeh2PB79CHCfuplzE8ttjcHEMDbMNQ82lD2LvVZOKtBPNJnjfRYeE98nQQBqVjdPl5mon9u5IQnCWMGDZEYCVIKAEduqwhYql89t6/V6V5vO5IVIX1auYlWQjHh0z3PYHoC3oaN9lQlGYcyKjMAed8b/qvWuDDuyELReWGHd/iDCKTNMhi2eDU7pyPqmRMR9WQkJ/1AtN0+JxCqzlKdNI93CJuA2p44glHoW8nAxfXIAGKetwOUH3RSnyISz5vKlEuBFiM7C02RNpai1/pYNFovB28mXIjfyHKf9qF1bseTo+d9Y3NSQNWUHqT3dKSxn+ZmAlgWEUbYcJNSgt1xp0wRf6/ANAOAmfxbpf+PbYSULaDaiUS6rHlVBT14qWoaEy0Y3zEi3sGbtDAp1csZ3Cy2R0OapQONIUoUeCXrRWit+YcY2SoW9lg0nDIEDJZGDoN0zfglPUZZmzA5gZq4JMSaiieh/f5jzxSfTN4ElBDqJpPTbvyuM2OK30f2wehA2pi7RjM8b1t2QaMH7Lf2vv2A7Nbm7x9QKZ2H4IUMa9MYaTx5PEYLrQXGGLWpP50jb+VG1IqRIczA1EhcbIvK5FlksSpQyByP/wBBcrVX+6XKXcUOgObT1aUHpBmRFUXY24vQVHsn+CPQLXwUbzG2R4YFA8Ly9GpCwkc56uAbDmetJ8sYK3RUi4cd6M+EBkjL0EL4aUagIMo+qyr3aRI/qjeZM0yrNJURW9OfgSIYM7vpyJ+aveS2//lHu+Jt/Bnjsjah9NbbWsTeYiNrIbmWmhN211P6LJQ9b23MqJD+ha6bb2R9rNna9yfd03o7ZTnlSOoYc0dvlNAqaZls2I6cYBIdLq7ac/kDMMUm4aEbKtnFoUZunXeN4Epv6rBbrqzAPCex4XRarmsnmiynMPRAqzia740FOTRH4TRZvlCy0GV1z4ZrBs6ZvzuxRSW1ZGXSNIJhfUJTFs2eJi3Q6em7VOqnxTVXJTY7rheZA65IAVeY9B3ccoOuavvVyuOnDOxyM+bswQujEdR1f7JVt8hvcthnHShxkfbwtWN8WfwuDpJuH6tbpfcpNaTjFrbfOypOCxJ4xIgXcIzUhqIfXGk0RY8NFQN+AOot9jGwC1iT+harfj/PiYdtIyVyCFP6zP9Im0H01m/nFaN5k6kJYcr4w7ValRGpB1zy6zVPIxPsGzfLbl3Up8lHVKiss9/dszkyH9wOweZ4l9Q5q9HYNM7KIWsetzrRoTTJ6kCS4s09CCj890DYnVdjvrofsnLCPZbR4YZgxKADcADUBWbgFfrPHDDIpwZI5fGgvx10sp71I3/GXI4U3BvMBYvprIyIcITpJveJc6JUHVrazr3WFg5R2Y9DYn2r8GvIyG25JTWMfzAj8Gd2n4QgP6BXHn6Gmk35TnhT/nlXBPulNAYti5uIhNns2tU8dg4ijWqa1NYZTQ8Jv6TzH8hBxSxTOB9ZGwC95ewUHZfV+9cRpsYVQYRkTYUMKqQ1NSO8QHUheo4omcYw4bdeckzLUNWCmjHLwJB1wBB3FqlY9PyAJuoCLYJjWSZMDZhB8gWrGu/EyTQWG1xz9pnsxDFX0YcknqaWZmU3UeE/wbWDEPD6NJ5K+9vkVf5e1sDHVfkAa0PrfNaIjLfwGUfONDLVw0lI+tpj9uQAEqLJGhXRMBj+bjpp0G219fIanXVUyGHaj67QA7i7hmW8TT8sft0K4gSNhWpiIAlF1rdqRLOc2l2kVsal9zoUv8WzTMq3oI6AYbgnRV9AAZSfyBWTw9xMnj+dxFzAlh+9szNphUWYjhn9hKjpES+zTMd7Neewm0H5V28Iky+mL7+ScqQgAOJ95v07n6/l6rpSlhEB/SRt8wOWKZBGP/CB6mxXNW3qwPzag7VWDDC7QFopYrB2LTATEG+KjFtVHrejT2LP6pUH/MLfVL0u9636WJbEHguaWWSeWEB8sV7H9OvOB0fciBrjaD4iO7Ti+DRQORvsGvBFUMcHqFktXemEoCKLAyFKlMrE/jSY2FLw8Zu9HQ/nVUMY+DyanZJYDG0Vh4gxCYAyAhOIFOyIAEhambJUbAgrSIRmJEKL7j07aO1GfZ/zbf+zVQHvT9UMN5RBmtz4aCw8OiRQt9aClM8Wbxa11SHzMRVh7sEpT74T1w9wW+VoJUty4nqxgbUSaQozlmA2J+w4iPQkpw4JoPN311DF6bAXkI8oluXDh6ZgmcUISJU96krxKBad7Cv7/+LoNi5raGZUbvVBBNqPHEN3XcPYIhHtxRS2sGp5vI2Z9Fb+qIFLOiPWhZRLxVnongmGeK7vJ9SRNw5pxISQnqIDSYv7f/SSo1x1xr1h4iF+oh3ZoQcdwRgG3q+1DEGqpIJysOpOVOmWSA9/fCnyXLICjEbAGI0kpfhdwAADHsYdpUTJa+gKhHdsGtKgLmLNmMwy+MPEPC8PM1+PdriDRFCHIaZGF5fAX6DqRm1tewONJvqOIvexfpmm6MS6uGcwd1t5GMyQLFezXTeNWRUujFaod0qCmmGGiRun6PGX1Hk282EtQAALjguDDimL1Acw9OA85h0AI7Jelj3Oicv/TUxhb3shvt5INXZEL6BJmAhY+zOWud+l6VgAAA7+36O7VJM9PsIlRWQgSQ4aXaGhdSOz5KOQJ/qcyE6vT9xh0qVY3XDU6AMU7rAJj7EVbTztmUUZYsDQkqENeKr/ymZhkpfaEPQtEgm75CyWRnsv1JcF6jTyZCWU5OrGmBnmKgXfR1No03snHJUmojjuOZyPqF+DZml3ocjLwFTMLF2KK2QJEKqyqLLArcH3xRwFgPDd6pERPDqtw7RwDqpaMQj9n2EbhO7E+0hL0KUE7rUiaUZEu42Ly+AZMBUx65o2ER5sQMYlJxHzY0b2ExaQaF4RV9v3Ittxaxov4FPZIMJXOBFI9oIPvpnHYLSUQRweNK4jqTQDX18HBZ2YkYHcyEXURtefUPiWYnLToOnHzqTa+MQZua7D7l6n5npZWxjLaN9DGaDZQ0/7u/4dxqGyxO413q2TT4v/gbmJZJIyU74jt8VU4P9FabZRgQKdoc+uO8C4E3wcLZxgk5ZcdshXY4ru064SHPcfMtXYh3+aSBtJXNzIuRJu9WNjXRf5A6HD2NeXKfsMsiHu1m7p2pdsgWu8VaMDGbWjumt08+MA5UI10oFUuHN97eA54aSV5mIVmaj95Q3stdD/DtFiKuXghB627WxDRLI4wWCfdP6mxmjfwaVU+2HZJLU7JJH4CkVQ+yi0AJlJS/ti/lCNHXqB6ZaV/Wy0MfyI1GFqxCE1I95e8FS/qT8470HAEI1pe4k/8bAM5gUzLaJoNy/MgYvwRPFXyLPp+kvlLTRrZKLuo1+KyuZJ2sZGNYJeVu+foWczDGBGXZ8SQHZhyDKoVYJ3UD/j0/9BxDZWhZP2ix38W+I3x1r/104cwWj+G7zp8OeVZhBmAdE6w7r5I2nJcHzrB5aeZ5JxHlyjka+SrIZiODiCBrX2rbVUnUCbPR6i+qMG0D4N4wcKofB3q4yELuyjDty4WBO3er8gijybTpP6sXgTwHUxcQHp4dE/oMJN6AnQs5PcmhUq4BiazevSDTKhozPrE7yHpmaUaJgTJPSmNeTCf4/cjmVq4Pm+VroQohHemQSGRWl5S+5S8YnLBLk8V/KvBNkDuFbJL0p1ODpauqqeTbrN25O69RihxBaZNPEveDxqusJc+5bkgvEAV9gS9BoVP9i/xyeN++Ime5KjC5FtIR79t1dZHi+ZC99z/WENc9Qbi4qf+ETIu/ibqJo5moYgLA6tkQNS0FVmj47M/hN4Mn+lh6lPk3zpD6G8t27GhAtdcobvwEYmgnvdTvFnpuClf/L9uaRGgmrVvYI+vpPzsbT5us0ZFwfcGdB8WXlANkgcKuab3mR5AR3A3iha3Wn3zeqvRb7KZ9AvtHm6tRhQ9udrmGDWklXU+TJTD/u0Va5fiD9gEG3z0emtyeExk0Mb105DUaLdjjqpqGnv3TiYNXcUQDSV2uceGOPWXi+pudrhg//ImsBvKMggUxY+EhM9DJZVBW6St5KLE4ucdCFNhNv4OEoRGcz0SOdeAlD0OzJObi7s22m7hRQ5bdORGgDbBOuPrkR4jaD8X8+gbufraQD08pUnmlYumckvnKPlfJCatVmfbZaWmygZzfaF2Wa3Bn5rKc0wp/HCyXE4/C9t/T83Pcg1wroS6nVHCMwvZNAZiIDd9ACh659HMkwep1AavNygBL7mLYGA2gs51QLf6heg3V43Dc0gZ1FTd1j5oIDARk9t4EQJ5Vw8j0IJkdapc5EC9xjCcfP1ItRdMFrFTcPRh4oCRlg3BnWBFqA2+vWkmwdLdg2Ln/OthKqLtEt0LvHa/FScJU1muCsqPMX80MxFfDeJrjzWcuDnrANWDAx2QeLWAjsTkgWWP1E0Wn/N9t+rASZpclSTiX1yF8uTTi0gzJkhGyP/QOginz0cfAT1trb9ZV420+RDBu9dqXrmzxY/09PZljlZ3Zsh+vHEWhLPJO7airv/UWtAOj5thdhIw/94cH94jYXVexCSjETjXD0S4alM66cHWpptR+oWctaSKRWZebvcDHt7N0yCQ7yNBDncu1ovVCZBAiSyL/Z2kO2fGhqJjJuG8BfyRsNCMj32UlYBu1eol1vGH5tE3Ok19KtPJhetDHiP4PvRMYLdXZVNYYu1nNyGo1bkMn+VXLJZVMe4JqcI4grztGce+srvrnRFOq48rnJUAsVpdl9pnS1mDjLwljymvT29CNVeHiBTFwuqHX+zuClFjU2wnRIyQOfnuwt+Uve83oyR0oPs03OV6o1ouWRgX6vbVCA3sDLV3lcr5ss7D1Hw8femt/3f7r6XFmzrwqn/ayVLG8VBVEC7CBjvfoq5iFBvuE/n0/ioSNX/+vTlxLYFQiKF11biiSRikEMQ9OZnPiEcNRub3qgK75s4ZbuUNcurtkG6hi9cW765Nq3L4OVWHs0zU82sZqDEw2rWp5ljIEbrTD6BL0BXffptS+oy+0hUNoQ0bNPoafdSATqKWoF/+lgXJvCFddov/BNp9ZUTG/NrdWXtd+892fdHsm/wZ3cRc+3QKZT6RaJTluGuTyci3sO5+3yNilkPNK1EQSct4Q8C9T/HNYSGLQg+OUQEDWTH0sOuOuawTFDry/QvSTUQ33h/KMAw8z6gS17HtnLVCJQFY8vnE2o1vYKk+JDZiwexx/f8cQ0/z0ZTwkbYbVDOwPDnsuS2VsqI313xPUd5xDEm1RXoMFK+MgxYlT0oELXPBl7ZJ7OZyzmhMpKZGvKThw9gqfCE7PojFnDLkEJwjT6oSvIeTjmivVhORWn2+TkT2MWkFDVY4cLUtbUCq0mhABq9lw3fxwIDfOUfGPnVX7bm8LK4yrEYrKi7Dgx+7vRvDG7SMqrjylN5l+tMWUhqPvq73Tz6hMxoccy2mYhLaXeawgt6Q/kk4UvR5F4P1/W0ChLMKd99YpUo4WxqBugUrNGWooOtwfmWOofErFv3O6w8W7tiVn0n3Yakh4WC7rXdN/xB6xR/uEFLACGPIR96y7kEqf2DZAX1UW3xwewSb9+AzmC13WpNDQJi2wYW1e2a1U8kXU3EchNe8kLq4Jgr8fa5koIzipyBe7tXPyMedlJEP8vDc4sB0Y3ZwHyESjHFeXRYlKOZ02TEBQ8cIPPHQ95G5RRLdn8/S5KgkBAwffw2HjNNTi+tDFoUalSiv+XsL1S1olccJ5ywDPlaV5V4vSvGCo0d8F/Vr2Fkak3ZzYLKirHpiekg8SgCnKjRlwtPOKSMZf3719/barYZ9R7pqEUERRWaaJjRkCKujmIl3Ox9nyzqO2Z0bMCW1etCTgGZ+D+c9t/oWGwpWVRXz/+NK8yIF+Nv+Ll4fX1LwEq86Di4RiHx4GCbv39JNn7Y3r2UlDm/5sYlEmbH2A5hbSNK6TiBHMInNaej/u3UHwCP0/PUZCg3JrEC1qTXoGktd28g4KylqC3/f7cPCz8aBIPDPzo8vW1UzP03LqdXps3Dv3/99SqmdNGa0ZK7M/R77lImGwbN/POGnW/5owkQFJACMRZ+iJCGDfsdhtK5/ShA87RXQQfKijw3M98yQtLvKebk6iq7rwr90oNWrQ5Jii7s71SvosQPmnuViE7NQFnrVZzC8+a5cWquAORQQep182SGU2p/3uJ6clhJRT9bw7UeV/E2PFFkTUTEJsyE6ALM4xahQUdBihxzmIgbblQv1MWsIGYzljvzoHiSMDpEnOe8hQFaX5esDK6SJM5Ek1EKnWHNznc9Y3zO1I8GXaJfs/eZ0IPp5U0xQizIkt5fKu0QhP/DoS5pV7ksAKfw2CGpNIl+1nYMEpQJcU+ASd4AqP9x71MTtfx01ekriX9CjVG7aZdN+7Q4xbuKSQXCccnlxivMcWAWfLXg0xtX8D46MgbDdzND+IB3zi7znRnmOX5Vz2NDaXPNao7Enp58RjxVDnxU0kG5gStP4SdPjhF4nf/ce5oB5Vqnlc8n1yvvXk5yVrjmZs37lNgx4CDroJs1uOPODBJGzFwsjmDa9F8oypGy1M0hklaKn8SWPHPCKBtSRNTtFKTs/5VoMIF4RSVOWQDNjT0aKid8g9RMXHVUpDl8tuEjMT8zpLeVwynU/GTonI3hSTwBO9Rn1D1sCKEOUHzo79ZpvYgDbnSDfuzgA9NhyTXBbBQ9y80GvtMZFZXHu/+k0X8WWJkNNvcb58dpleKhkcC2MI1Whp6tQTJrhwD0KtKB1uN+rDj/2wB1ZJR9t7vhNfV8VmeQLK4erQ4XWGY90LRGIaa72gocLdqTNdpipxF3ctN99nKtYS/zPnxh9QamPJHh8iDDYgNxX8W12jgNZ+wTux1rN033F1OWp1OzAuiJoEuk7tojSi3pDn0V//zD3coP4bLK9CMkVIU+zENM2V9tDKAvb1rGUrrkTKR/gUgt6GUy25ngvqfkTB7TiajVFtW1Zx9FIH3YhM+22rTlzmIDsY4TXfCMz+aGi7aWSx5Gqsh32vk0dEu4oGXrxjkN+hFF7zWkEF3icrxkYnxjvGVuHuzbIFzYX7xbwqCaP+bH1Kpk11dUGZH2F9riOvPPhoMPvpVv4dW37hpWO7ZTLL8lhegeQ+MR2L61oegAMyI4jd1p/cAu1uSwFuff4eFZPiDEXxO038/fv6D0byClF3adk3L09lbcv4c3J6P59qnvMc94e4BKl4QAMxfc0CPUKE6nYnWNoL8xcIh1F7gSTamzIc8oUfhxhivjPCeB9Y8KTzUnLooaqKwHjcu0hFRKl9fV8CEGWFjZMzfvP45u3UkTJBUkMkH3iLb+Unf/OxeHHN8By+DOZ8Eo7zF1kdSB6uDnqMOkdD6+j1YCR9XQIcjXKdiE2TD4dOC1xQvr0buClDyJjsmEucE2NWIntFDqzEcjbjsd1dp65v1wuCWcgwpLrvgAK+ft6D7eTlSflwVlPWDcE9Sm+tzSLSZA5RnDZnyW7Zh3HmWEyvv91gMQOUYp/V3DDvsWr9OJI19Ye76IvVMtMrw5wxW5KId+zl2xbPiml97tN8ArA1uZ4+DgZlH4fwT3aadv7S8qu5QA3YIkf6bXHXMi21M4KD1eYtpnDVWwUA+gIF8LUvPCT/YjNFSrCA+zABulSFn2Jqr07B8q9k0PEG0oZpf3zjtD0j5QWz8oCfB6EoWa2oWV+7yitJexIgiN2rgAAAAAA" alt="Fyerai Logo" class="logo-img">
             </div>
         </div>
     </nav>
@@ -1208,7 +1209,7 @@
             if (e.target.files.length > 0) processFile(e.target.files[0]);
         });
 
-        // File Processing
+        // File Processing with Image Analysis
         async function processFile(file) {
             if (!file.type.startsWith('image/')) {
                 alert('Please upload an image file');
@@ -1226,11 +1227,11 @@
             reader.onload = async (e) => {
                 resultImage.src = e.target.result;
                 
-                // Simulate AI processing
-                await new Promise(resolve => setTimeout(resolve, 3000));
+                // Simulate AI processing time
+                await new Promise(resolve => setTimeout(resolve, 2000));
                 
-                // Generate and display results
-                const analysis = generateAnalysis();
+                // Analyze the image data
+                const analysis = await generateAnalysis(e.target.result);
                 displayResults(analysis);
                 
                 loadingScreen.classList.remove('active');
@@ -1238,92 +1239,339 @@
             reader.readAsDataURL(file);
         }
 
-        // Generate Analysis (FREE - Rule-based)
-        function generateAnalysis() {
-            const analyses = [
-                {
-                    score: 7.8,
-                    rating: 'Good',
-                    concerning: [
-                        { name: 'Added Sugars', desc: 'Contains moderate amounts of added sugars. Monitor total daily sugar intake to maintain healthy blood glucose levels.', risk: 'medium' }
-                    ],
-                    insights: [
-                        '🌾 Rich in whole grains and dietary fiber, supporting digestive health',
-                        '💪 Good source of essential vitamins and minerals',
-                        '❤️ Low in saturated fats and trans fats',
-                        '⚡ Provides sustained energy from complex carbohydrates'
-                    ],
-                    alternatives: [
-                        '✨ This is already a relatively healthy choice!',
-                        '🎯 Consider the unsweetened version if available',
-                        '🥗 Pair with protein for balanced nutrition'
-                    ]
-                },
-                {
-                    score: 5.5,
-                    rating: 'Moderate',
-                    concerning: [
-                        { name: 'High Fructose Corn Syrup', desc: 'Linked to obesity, diabetes, and metabolic disorders. Can spike blood sugar rapidly and contribute to insulin resistance.', risk: 'high' },
-                        { name: 'Partially Hydrogenated Oils', desc: 'Contains trans fats which increase bad cholesterol (LDL) and decrease good cholesterol (HDL), raising cardiovascular disease risk.', risk: 'high' },
-                        { name: 'Artificial Flavors', desc: 'Synthetic compounds with limited long-term safety studies. May trigger allergic reactions in sensitive individuals.', risk: 'medium' },
-                        { name: 'Sodium Content', desc: 'Elevated sodium levels contributing to hypertension and cardiovascular stress. Daily limit easily exceeded.', risk: 'medium' }
-                    ],
-                    insights: [
-                        '⚠️ Regular consumption may lead to weight gain and metabolic dysfunction',
-                        '💔 Trans fats accumulate in arteries, increasing heart disease risk',
-                        '📈 High sugar content disrupts insulin sensitivity over time',
-                        '🔥 Processed ingredients may trigger inflammatory responses'
-                    ],
-                    alternatives: [
-                        '🌿 Choose whole food alternatives with minimal processing',
-                        '🍯 Look for products sweetened with natural sugars or no added sugars',
-                        '📋 Select items with recognizable, whole food ingredients',
-                        '🌱 Opt for organic or non-GMO certified options when available'
-                    ]
-                },
-                {
-                    score: 3.2,
-                    rating: 'Poor',
-                    concerning: [
-                        { name: 'Carbonated Water & Phosphoric Acid', desc: 'Highly acidic combination that erodes tooth enamel and interferes with calcium absorption, potentially affecting bone density.', risk: 'high' },
-                        { name: 'High Fructose Corn Syrup', desc: 'Excessive consumption strongly linked to obesity, type 2 diabetes, and non-alcoholic fatty liver disease.', risk: 'high' },
-                        { name: 'Caffeine (High Dose)', desc: 'Can cause dependency, sleep disruption, anxiety, and cardiovascular stress in sensitive individuals or with regular consumption.', risk: 'medium' },
-                        { name: 'Caramel Color IV', desc: 'Contains 4-methylimidazole (4-MEI), a potential carcinogen in high amounts. Long-term exposure concerns.', risk: 'medium' }
-                    ],
-                    insights: [
-                        '🚫 Zero nutritional value - purely empty calories',
-                        '🦷 Acidic pH damages tooth enamel with regular consumption',
-                        '🎢 High sugar content leads to energy crashes and increased cravings',
-                        '🦴 Phosphoric acid linked to increased osteoporosis risk'
-                    ],
-                    alternatives: [
-                        '💧 Sparkling water with fresh fruit infusion',
-                        '🍵 Herbal teas (hot or iced) for natural flavor',
-                        '🥥 Coconut water for natural electrolytes and minerals',
-                        '🍋 Homemade lemonade with minimal natural sweeteners'
-                    ]
-                },
-                {
-                    score: 8.5,
-                    rating: 'Excellent',
-                    concerning: [
-                        { name: 'Sodium Phosphates', desc: 'Used as preservatives. High intake may affect kidney function and mineral balance in susceptible individuals.', risk: 'low' }
-                    ],
-                    insights: [
-                        '💪 Excellent source of lean protein for muscle health',
-                        '✅ Minimal processing with mostly natural ingredients',
-                        '❤️ Very low in saturated fats and cholesterol',
-                        '🏋️ Great option for muscle building and weight management'
-                    ],
-                    alternatives: [
-                        '⭐ This is already an excellent choice!',
-                        '🌾 Consider grass-fed or free-range for even higher quality',
-                        '👨‍🍳 Marinate at home to fully control sodium levels'
-                    ]
-                }
-            ];
+        // Comprehensive Ingredient Database (100+ ingredients)
+        const ingredientDatabase = {
+            // High-risk sweeteners
+            'high fructose corn syrup': { risk: 'high', category: 'sweetener', score: -15, desc: 'Linked to obesity, diabetes, and fatty liver disease' },
+            'corn syrup': { risk: 'high', category: 'sweetener', score: -12, desc: 'Highly processed sweetener with rapid glucose spike' },
+            'aspartame': { risk: 'high', category: 'sweetener', score: -14, desc: 'Artificial sweetener linked to headaches and neurological concerns' },
+            'sucralose': { risk: 'medium', category: 'sweetener', score: -10, desc: 'Artificial sweetener that may affect gut bacteria' },
+            'saccharin': { risk: 'medium', category: 'sweetener', score: -10, desc: 'Artificial sweetener with controversial safety history' },
+            'acesulfame potassium': { risk: 'medium', category: 'sweetener', score: -9, desc: 'Artificial sweetener, limited long-term studies' },
+            
+            // Medium-risk sweeteners
+            'sugar': { risk: 'medium', category: 'sweetener', score: -8, desc: 'Refined sugar, empty calories' },
+            'glucose': { risk: 'medium', category: 'sweetener', score: -7, desc: 'Simple sugar, rapid blood glucose impact' },
+            'dextrose': { risk: 'medium', category: 'sweetener', score: -7, desc: 'Refined glucose, quick energy but no nutrients' },
+            'sucrose': { risk: 'medium', category: 'sweetener', score: -7, desc: 'Table sugar, contributes to weight gain' },
+            'fructose': { risk: 'medium', category: 'sweetener', score: -8, desc: 'Fruit sugar, but processed form stresses liver' },
+            'maltodextrin': { risk: 'medium', category: 'sweetener', score: -6, desc: 'Highly processed carb with high glycemic index' },
+            'cane sugar': { risk: 'medium', category: 'sweetener', score: -7, desc: 'Still refined sugar despite natural source' },
+            'brown sugar': { risk: 'medium', category: 'sweetener', score: -7, desc: 'Refined sugar with minimal molasses' },
+            'invert sugar': { risk: 'medium', category: 'sweetener', score: -7, desc: 'Processed sugar mixture' },
+            'malt syrup': { risk: 'medium', category: 'sweetener', score: -6, desc: 'Concentrated sweetener from grains' },
+            'rice syrup': { risk: 'medium', category: 'sweetener', score: -6, desc: 'High glycemic index sweetener' },
+            
+            // Harmful fats
+            'partially hydrogenated': { risk: 'high', category: 'fat', score: -20, desc: 'Contains trans fats - banned in many countries' },
+            'trans fat': { risk: 'high', category: 'fat', score: -20, desc: 'Increases bad cholesterol, major heart disease risk' },
+            'hydrogenated oil': { risk: 'high', category: 'fat', score: -18, desc: 'Artificial fat linked to cardiovascular disease' },
+            'shortening': { risk: 'high', category: 'fat', score: -16, desc: 'Often contains trans fats' },
+            'palm oil': { risk: 'medium', category: 'fat', score: -5, desc: 'High in saturated fat, environmental concerns' },
+            'palm kernel oil': { risk: 'medium', category: 'fat', score: -6, desc: 'Very high in saturated fat' },
+            'lard': { risk: 'medium', category: 'fat', score: -7, desc: 'Animal fat, high in saturated fat' },
+            'tallow': { risk: 'medium', category: 'fat', score: -7, desc: 'Beef fat, high in saturated fat' },
+            
+            // Harmful additives
+            'monosodium glutamate': { risk: 'medium', category: 'additive', score: -10, desc: 'Flavor enhancer, may cause reactions' },
+            'msg': { risk: 'medium', category: 'additive', score: -10, desc: 'Can trigger headaches and sensitivity reactions' },
+            'disodium inosinate': { risk: 'medium', category: 'additive', score: -8, desc: 'Flavor enhancer, often paired with MSG' },
+            'disodium guanylate': { risk: 'medium', category: 'additive', score: -8, desc: 'Flavor enhancer, often paired with MSG' },
+            
+            // Harmful preservatives
+            'sodium benzoate': { risk: 'medium', category: 'preservative', score: -7, desc: 'May form benzene (carcinogen) with vitamin C' },
+            'potassium benzoate': { risk: 'medium', category: 'preservative', score: -7, desc: 'Similar concerns to sodium benzoate' },
+            'sodium nitrite': { risk: 'high', category: 'preservative', score: -15, desc: 'Forms carcinogenic nitrosamines when heated' },
+            'sodium nitrate': { risk: 'high', category: 'preservative', score: -15, desc: 'Converts to nitrite, cancer concerns' },
+            'potassium sorbate': { risk: 'low', category: 'preservative', score: -3, desc: 'Generally safe preservative' },
+            'sodium sulfite': { risk: 'medium', category: 'preservative', score: -8, desc: 'Can trigger asthma in sensitive individuals' },
+            'sulfur dioxide': { risk: 'medium', category: 'preservative', score: -8, desc: 'May cause respiratory issues' },
+            'bha': { risk: 'high', category: 'preservative', score: -12, desc: 'Possible carcinogen, hormone disruptor' },
+            'bht': { risk: 'high', category: 'preservative', score: -12, desc: 'Possible carcinogen, organ toxicity concerns' },
+            'tbhq': { risk: 'high', category: 'preservative', score: -12, desc: 'Linked to vision problems and DNA damage' },
+            'propyl gallate': { risk: 'medium', category: 'preservative', score: -9, desc: 'Possible endocrine disruptor' },
+            
+            // Artificial colors
+            'artificial color': { risk: 'medium', category: 'additive', score: -8, desc: 'Synthetic dyes with potential health risks' },
+            'red 40': { risk: 'medium', category: 'color', score: -9, desc: 'Linked to hyperactivity in children' },
+            'red 3': { risk: 'high', category: 'color', score: -11, desc: 'Banned in cosmetics due to cancer concerns' },
+            'yellow 5': { risk: 'medium', category: 'color', score: -9, desc: 'May cause allergic reactions and hyperactivity' },
+            'yellow 6': { risk: 'medium', category: 'color', score: -9, desc: 'Contaminated with carcinogens' },
+            'blue 1': { risk: 'medium', category: 'color', score: -8, desc: 'May cause allergic reactions' },
+            'blue 2': { risk: 'medium', category: 'color', score: -8, desc: 'Brain tumor concerns in animal studies' },
+            'green 3': { risk: 'medium', category: 'color', score: -8, desc: 'Bladder tumor concerns' },
+            'caramel color': { risk: 'medium', category: 'color', score: -7, desc: 'May contain 4-MEI, a possible carcinogen' },
+            'caramel coloring': { risk: 'medium', category: 'color', score: -7, desc: 'Type IV contains potential carcinogens' },
+            
+            // Artificial flavors
+            'artificial flavor': { risk: 'medium', category: 'additive', score: -8, desc: 'Chemical mixtures, unknown long-term effects' },
+            'artificial flavoring': { risk: 'medium', category: 'additive', score: -8, desc: 'Proprietary blends, lack transparency' },
+            'diacetyl': { risk: 'high', category: 'flavor', score: -13, desc: 'Butter flavor linked to lung disease' },
+            
+            // Processed grains
+            'enriched flour': { risk: 'medium', category: 'grain', score: -4, desc: 'Refined grain, nutrients stripped then added back' },
+            'enriched wheat flour': { risk: 'medium', category: 'grain', score: -4, desc: 'Refined flour with added synthetic vitamins' },
+            'bleached flour': { risk: 'medium', category: 'grain', score: -5, desc: 'Chemically whitened, nutrient depleted' },
+            'refined flour': { risk: 'medium', category: 'grain', score: -5, desc: 'Processed grain, low fiber and nutrients' },
+            'white flour': { risk: 'medium', category: 'grain', score: -4, desc: 'Refined grain, minimal nutritional value' },
+            'wheat flour': { risk: 'low', category: 'grain', score: -2, desc: 'Better than enriched but still processed' },
+            
+            // Additives and thickeners
+            'modified food starch': { risk: 'low', category: 'starch', score: -3, desc: 'Chemically altered starch' },
+            'modified corn starch': { risk: 'low', category: 'starch', score: -3, desc: 'Processed thickener' },
+            'carrageenan': { risk: 'medium', category: 'thickener', score: -7, desc: 'May cause inflammation and gut issues' },
+            'polysorbate 80': { risk: 'medium', category: 'emulsifier', score: -8, desc: 'May affect gut bacteria and inflammation' },
+            'soy lecithin': { risk: 'low', category: 'emulsifier', score: -1, desc: 'Generally safe, often from GMO soy' },
+            'xanthan gum': { risk: 'low', category: 'thickener', score: -1, desc: 'Generally safe thickener' },
+            'guar gum': { risk: 'low', category: 'thickener', score: -1, desc: 'Natural thickener, generally safe' },
+            'cellulose gum': { risk: 'low', category: 'thickener', score: -2, desc: 'Wood pulp derivative, generally safe' },
+            
+            // Good ingredients  
+            'whole grain': { risk: 'good', category: 'grain', score: 8, desc: 'Rich in fiber and nutrients' },
+            'whole wheat': { risk: 'good', category: 'grain', score: 8, desc: 'Complete grain with bran and germ intact' },
+            'whole grain wheat': { risk: 'good', category: 'grain', score: 8, desc: 'Unrefined wheat with full nutrition' },
+            'oats': { risk: 'good', category: 'grain', score: 10, desc: 'High fiber, heart-healthy grain' },
+            'rolled oats': { risk: 'good', category: 'grain', score: 10, desc: 'Minimally processed oats' },
+            'steel cut oats': { risk: 'good', category: 'grain', score: 10, desc: 'Least processed oat form' },
+            'quinoa': { risk: 'good', category: 'grain', score: 12, desc: 'Complete protein, nutrient-dense grain' },
+            'brown rice': { risk: 'good', category: 'grain', score: 8, desc: 'Whole grain rice with fiber' },
+            'wild rice': { risk: 'good', category: 'grain', score: 9, desc: 'Nutrient-dense grain' },
+            'barley': { risk: 'good', category: 'grain', score: 8, desc: 'High fiber grain' },
+            'millet': { risk: 'good', category: 'grain', score: 8, desc: 'Gluten-free whole grain' },
+            'buckwheat': { risk: 'good', category: 'grain', score: 9, desc: 'Gluten-free, nutrient-rich' },
+            
+            // Healthy fats
+            'olive oil': { risk: 'good', category: 'fat', score: 10, desc: 'Heart-healthy monounsaturated fat' },
+            'extra virgin olive oil': { risk: 'good', category: 'fat', score: 12, desc: 'Highest quality olive oil, rich in antioxidants' },
+            'avocado oil': { risk: 'good', category: 'fat', score: 10, desc: 'High smoke point, healthy fats' },
+            'coconut oil': { risk: 'good', category: 'fat', score: 6, desc: 'Medium chain triglycerides' },
+            'flaxseed oil': { risk: 'good', category: 'fat', score: 9, desc: 'Rich in omega-3 fatty acids' },
+            'walnut oil': { risk: 'good', category: 'fat', score: 9, desc: 'Omega-3 rich oil' },
+            'sunflower oil': { risk: 'medium', category: 'fat', score: 2, desc: 'High in omega-6, use in moderation' },
+            'canola oil': { risk: 'low', category: 'fat', score: 3, desc: 'Often highly processed' },
+            
+            // Nutrients
+            'fiber': { risk: 'good', category: 'nutrient', score: 8, desc: 'Essential for digestive health' },
+            'dietary fiber': { risk: 'good', category: 'nutrient', score: 8, desc: 'Supports gut health and satiety' },
+            'protein': { risk: 'good', category: 'nutrient', score: 10, desc: 'Essential macronutrient for body function' },
+            'whey protein': { risk: 'good', category: 'protein', score: 8, desc: 'Complete protein source' },
+            'pea protein': { risk: 'good', category: 'protein', score: 7, desc: 'Plant-based protein' },
+            'vitamin a': { risk: 'good', category: 'nutrient', score: 5, desc: 'Essential for vision and immunity' },
+            'vitamin c': { risk: 'good', category: 'nutrient', score: 5, desc: 'Antioxidant, immune support' },
+            'vitamin d': { risk: 'good', category: 'nutrient', score: 5, desc: 'Bone health, immune function' },
+            'vitamin e': { risk: 'good', category: 'nutrient', score: 5, desc: 'Antioxidant vitamin' },
+            'vitamin b': { risk: 'good', category: 'nutrient', score: 5, desc: 'Energy metabolism' },
+            'iron': { risk: 'good', category: 'mineral', score: 5, desc: 'Essential for blood health' },
+            'calcium': { risk: 'good', category: 'mineral', score: 5, desc: 'Bone and teeth health' },
+            'magnesium': { risk: 'good', category: 'mineral', score: 5, desc: 'Muscle and nerve function' },
+            'potassium': { risk: 'good', category: 'mineral', score: 5, desc: 'Heart and muscle function' },
+            'zinc': { risk: 'good', category: 'mineral', score: 5, desc: 'Immune function and healing' },
+            
+            // Quality markers
+            'organic': { risk: 'good', category: 'quality', score: 5, desc: 'Certified pesticide-free' },
+            'non-gmo': { risk: 'good', category: 'quality', score: 4, desc: 'Not genetically modified' },
+            'natural': { risk: 'good', category: 'quality', score: 3, desc: 'Minimally processed ingredients' },
+            'whole food': { risk: 'good', category: 'quality', score: 8, desc: 'Unprocessed, complete ingredients' },
+        };
 
-            return analyses[Math.floor(Math.random() * analyses.length)];
+        // Real OCR - Extract text from image using Tesseract.js
+        async function extractTextFromImage(imageData) {
+            try {
+                // Update loading text
+                document.querySelector('.loading-subtitle').textContent = 'Reading ingredients from image...';
+                
+                const { data: { text } } = await Tesseract.recognize(
+                    imageData,
+                    'eng',
+                    {
+                        logger: info => {
+                            if (info.status === 'recognizing text') {
+                                const progress = Math.round(info.progress * 100);
+                                document.querySelector('.loading-subtitle').textContent = 
+                                    `Reading ingredients... ${progress}%`;
+                            }
+                        }
+                    }
+                );
+                
+                document.querySelector('.loading-subtitle').textContent = 'Analyzing ingredients...';
+                
+                console.log('OCR Extracted Text:', text);
+                return text || "No text detected in image";
+                
+            } catch (error) {
+                console.error('OCR Error:', error);
+                return "Unable to extract text from image";
+            }
+        }
+
+        // Intelligent Analysis Engine
+        function analyzeIngredients(text) {
+            const textLower = text.toLowerCase();
+            
+            // Find matching ingredients
+            const foundIngredients = [];
+            let totalScore = 100; // Start at 100
+            
+            for (const [ingredient, data] of Object.entries(ingredientDatabase)) {
+                if (textLower.includes(ingredient)) {
+                    foundIngredients.push({
+                        name: ingredient.split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' '),
+                        ...data
+                    });
+                    totalScore += data.score;
+                }
+            }
+            
+            // Ensure score is between 0-100
+            totalScore = Math.max(0, Math.min(100, totalScore));
+            
+            // Categorize ingredients by risk
+            const harmful = foundIngredients.filter(i => i.risk === 'high' || i.risk === 'medium');
+            const good = foundIngredients.filter(i => i.risk === 'good');
+            
+            // Generate insights based on what was found
+            const insights = generateInsights(foundIngredients, totalScore);
+            const alternatives = generateAlternatives(harmful, totalScore);
+            
+            return {
+                score: totalScore,
+                rating: getRating(totalScore),
+                concerning: formatConcerningIngredients(harmful),
+                insights: insights,
+                alternatives: alternatives,
+                foundCount: foundIngredients.length
+            };
+        }
+
+        function formatConcerningIngredients(ingredients) {
+            if (ingredients.length === 0) {
+                return [{
+                    name: 'No Major Concerns Detected',
+                    desc: 'Based on common ingredient patterns, no highly concerning ingredients were identified. However, always check the full ingredient list.',
+                    risk: 'low'
+                }];
+            }
+            
+            return ingredients.map(ing => ({
+                name: ing.name,
+                desc: getIngredientDescription(ing),
+                risk: ing.risk
+            }));
+        }
+
+        function getIngredientDescription(ingredient) {
+            const descriptions = {
+                'sweetener': {
+                    'high': 'Linked to obesity, diabetes, and metabolic disorders. Can spike blood sugar rapidly and contribute to insulin resistance.',
+                    'medium': 'Added sugar that contributes empty calories. Regular consumption may lead to weight gain and energy crashes.'
+                },
+                'fat': {
+                    'high': 'Contains trans fats or unhealthy oils that increase bad cholesterol and cardiovascular disease risk.',
+                    'medium': 'Processed fat that may contribute to inflammation when consumed in excess.'
+                },
+                'additive': {
+                    'high': 'Synthetic additive with potential health concerns. May cause adverse reactions in sensitive individuals.',
+                    'medium': 'Artificial ingredient with limited long-term safety data. Best to minimize consumption.'
+                },
+                'preservative': {
+                    'high': 'Chemical preservative linked to potential health risks including cancer concerns in some studies.',
+                    'medium': 'Preservative that may cause reactions in sensitive individuals. Generally recognized as safe in small amounts.',
+                    'low': 'Common preservative, generally considered safe in typical amounts.'
+                },
+                'color': {
+                    'medium': 'Artificial coloring that may trigger hyperactivity in children and allergic reactions in sensitive individuals.'
+                }
+            };
+            
+            return descriptions[ingredient.category]?.[ingredient.risk] || 
+                   'This ingredient may have negative health impacts with regular consumption.';
+        }
+
+        function generateInsights(ingredients, score) {
+            const insights = [];
+            
+            if (score >= 80) {
+                insights.push('✅ Overall healthy ingredient profile detected');
+                insights.push('💪 Suitable for regular consumption as part of balanced diet');
+            } else if (score >= 60) {
+                insights.push('⚠️ Moderate nutritional quality - okay for occasional consumption');
+                insights.push('🎯 Could be improved with better ingredient choices');
+            } else if (score >= 40) {
+                insights.push('⚠️ Contains several concerning ingredients');
+                insights.push('🔄 Consider healthier alternatives for regular consumption');
+            } else {
+                insights.push('🚫 High number of processed and potentially harmful ingredients');
+                insights.push('💔 Regular consumption not recommended');
+            }
+            
+            const hasTransFat = ingredients.some(i => i.name.toLowerCase().includes('hydrogenated'));
+            const hasSugar = ingredients.some(i => i.category === 'sweetener' && i.risk !== 'good');
+            const hasArtificial = ingredients.some(i => i.name.toLowerCase().includes('artificial'));
+            
+            if (hasTransFat) insights.push('💔 Contains trans fats - strongly linked to heart disease');
+            if (hasSugar) insights.push('📈 High sugar content may impact blood glucose levels');
+            if (hasArtificial) insights.push('🧪 Contains artificial additives - long-term effects uncertain');
+            
+            if (ingredients.some(i => i.risk === 'good')) {
+                insights.push('✨ Contains some beneficial ingredients');
+            }
+            
+            return insights;
+        }
+
+        function generateAlternatives(harmful, score) {
+            const alternatives = [];
+            
+            if (score >= 75) {
+                alternatives.push('⭐ This product is already relatively healthy!');
+                alternatives.push('🌟 Continue choosing products with similar ingredient profiles');
+            } else {
+                alternatives.push('🌿 Look for products with whole food ingredients');
+                alternatives.push('📋 Choose items with fewer than 5 ingredients when possible');
+                
+                if (harmful.some(h => h.category === 'sweetener')) {
+                    alternatives.push('🍯 Opt for products with no added sugars or natural sweeteners like honey');
+                }
+                
+                if (harmful.some(h => h.category === 'fat')) {
+                    alternatives.push('🥑 Choose products with healthy fats like olive oil or avocado oil');
+                }
+                
+                if (harmful.some(h => h.name.toLowerCase().includes('artificial'))) {
+                    alternatives.push('🌱 Select products labeled "no artificial ingredients"');
+                }
+                
+                alternatives.push('✅ Look for organic or non-GMO certified options');
+            }
+            
+            return alternatives;
+        }
+
+        function getRating(score) {
+            if (score >= 85) return 'Excellent';
+            if (score >= 70) return 'Good';
+            if (score >= 50) return 'Moderate';
+            if (score >= 30) return 'Poor';
+            return 'Very Poor';
+        }
+
+        // Main Analysis Function with Real Image Processing
+        async function generateAnalysis(imageData) {
+            // Step 1: Extract text from image (simulated)
+            const extractedText = await extractTextFromImage(imageData);
+            
+            // Step 2: Analyze using ingredient database
+            const analysis = analyzeIngredients(extractedText);
+            
+            // Step 3: Return formatted results
+            return {
+                score: (analysis.score / 100) * 10, // Convert to 1-10 scale
+                rating: analysis.rating,
+                concerning: analysis.concerning,
+                insights: analysis.insights,
+                alternatives: analysis.alternatives
+            };
         }
 
         // Display Results
@@ -1336,24 +1584,27 @@
             document.getElementById('insightsPanel').style.display = 'block';
             document.getElementById('alternativesPanel').style.display = 'block';
 
+            // Convert score back to 0-100 for display
+            const displayScore = Math.round(data.score * 10);
+            
             // Animate score
             const circumference = 2 * Math.PI * 105;
             const offset = circumference - (data.score / 10) * circumference;
             
             setTimeout(() => {
                 scoreCircle.style.strokeDashoffset = offset;
-                scoreNum.textContent = data.score.toFixed(1);
+                scoreNum.textContent = displayScore;
             }, 300);
 
             // Set badge
             let badgeClass = '';
-            if (data.score >= 8) badgeClass = 'excellent';
-            else if (data.score >= 6) badgeClass = 'good';
-            else if (data.score >= 4) badgeClass = 'moderate';
+            if (displayScore >= 85) badgeClass = 'excellent';
+            else if (displayScore >= 70) badgeClass = 'good';
+            else if (displayScore >= 50) badgeClass = 'moderate';
             else badgeClass = 'poor';
             
             scoreBadge.className = `score-badge ${badgeClass}`;
-            scoreBadge.textContent = `${data.rating} Rating`;
+            scoreBadge.textContent = `${data.rating} (${displayScore}/100)`;
 
             // Populate concerning ingredients
             const concerningItems = document.getElementById('concerningItems');
@@ -1370,11 +1621,13 @@
             // Populate insights
             const insightsList = document.getElementById('insightsList');
             insightsList.innerHTML = data.insights.map(insight => {
-                const [emoji, ...textParts] = insight.split(' ');
+                const parts = insight.split(' ');
+                const emoji = parts[0];
+                const text = parts.slice(1).join(' ');
                 return `
                     <li class="insight-item">
                         <div class="insight-emoji">${emoji}</div>
-                        <div class="insight-text">${textParts.join(' ')}</div>
+                        <div class="insight-text">${text}</div>
                     </li>
                 `;
             }).join('');
@@ -1382,11 +1635,13 @@
             // Populate alternatives
             const alternativesList = document.getElementById('alternativesList');
             alternativesList.innerHTML = data.alternatives.map(alt => {
-                const [emoji, ...textParts] = alt.split(' ');
+                const parts = alt.split(' ');
+                const emoji = parts[0];
+                const text = parts.slice(1).join(' ');
                 return `
                     <li class="insight-item">
                         <div class="insight-emoji">${emoji}</div>
-                        <div class="insight-text">${textParts.join(' ')}</div>
+                        <div class="insight-text">${text}</div>
                     </li>
                 `;
             }).join('');
