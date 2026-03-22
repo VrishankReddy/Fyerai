@@ -931,6 +931,35 @@
             }
         }
 
+        /* Product Name Header */
+        .product-header {
+            text-align: center;
+            margin-bottom: 3rem;
+            padding: 2rem;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.85));
+            backdrop-filter: blur(40px);
+            border-radius: 24px;
+            box-shadow: 
+                0 0 0 1px rgba(108, 180, 212, 0.1),
+                0 12px 40px rgba(0, 0, 0, 0.06);
+        }
+
+        .product-name {
+            font-family: 'Outfit', sans-serif;
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+            letter-spacing: -0.02em;
+            line-height: 1.2;
+        }
+
+        .product-subtitle {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
         @media (max-width: 768px) {
             .container {
                 padding: 0 1.5rem;
@@ -1069,6 +1098,12 @@
 
         <!-- Results Section -->
         <section class="results" id="resultsSection">
+            <!-- Product Name Header -->
+            <div class="product-header" id="productHeader" style="display: none;">
+                <h2 class="product-name" id="productName"></h2>
+                <p class="product-subtitle">AI-Powered Ingredient Analysis</p>
+            </div>
+
             <div class="results-layout">
                 <!-- Image Panel -->
                 <div class="result-panel" id="imagePanel" style="display: none;">
@@ -1595,12 +1630,17 @@
                 throw new Error('NOT_FOOD_LABEL');
             }
             
-            // Step 3: Analyze using ingredient database
+            // Step 3: Detect product name
+            const productName = detectProductName(extractedText);
+            console.log('Detected Product:', productName);
+            
+            // Step 4: Analyze using ingredient database
             const analysis = analyzeIngredients(extractedText);
             
-            // Step 4: Return formatted results (score already 0-100)
+            // Step 5: Return formatted results (score already 0-100)
             return {
-                score: analysis.score, // Keep as 0-100
+                productName: productName,
+                score: analysis.score,
                 rating: analysis.rating,
                 concerning: analysis.concerning,
                 insights: analysis.insights,
@@ -1658,8 +1698,72 @@
             return hasKeywords || hasIngredients;
         }
 
+        // Detect product name from text
+        function detectProductName(text) {
+            const lines = text.split('\n').filter(line => line.trim().length > 0);
+            
+            // Product name is usually in first few lines, in CAPS or large text
+            // Look for common product patterns
+            
+            const productPatterns = [
+                // Brand + product type patterns
+                /^([A-Z][a-zA-Z]+'?s?\s+)?([A-Z][A-Za-z\s&]+(?:Cookies?|Chips?|Crackers?|Cereal|Bars?|Candy|Chocolate|Snacks?|Beverage|Drink|Juice|Soda|Water|Milk|Yogurt|Cheese|Bread|Pasta|Rice|Beans?|Soup|Sauce|Dressing|Oil|Butter|Margarine|Spread|Jam|Jelly|Honey|Syrup|Coffee|Tea))/i,
+                // All caps product names
+                /^([A-Z][A-Z\s&'-]+)$/,
+                // Title case with brand
+                /^([A-Z][a-z]+(?:\s+[A-Z][a-z]+){1,4})$/
+            ];
+            
+            for (const line of lines.slice(0, 10)) { // Check first 10 lines
+                const trimmed = line.trim();
+                
+                // Skip very short or very long lines
+                if (trimmed.length < 3 || trimmed.length > 50) continue;
+                
+                // Skip lines with common non-product keywords
+                if (trimmed.toLowerCase().includes('nutrition') ||
+                    trimmed.toLowerCase().includes('ingredients') ||
+                    trimmed.toLowerCase().includes('serving') ||
+                    trimmed.toLowerCase().includes('calories') ||
+                    trimmed.toLowerCase().includes('warning') ||
+                    trimmed.toLowerCase().includes('allergen')) {
+                    continue;
+                }
+                
+                // Try to match patterns
+                for (const pattern of productPatterns) {
+                    const match = trimmed.match(pattern);
+                    if (match) {
+                        return trimmed;
+                    }
+                }
+                
+                // If line is mostly capitals and reasonable length, likely product name
+                const capsRatio = (trimmed.match(/[A-Z]/g) || []).length / trimmed.length;
+                if (capsRatio > 0.5 && trimmed.length >= 5 && trimmed.length <= 40) {
+                    return trimmed;
+                }
+            }
+            
+            // Fallback: return first substantial line
+            for (const line of lines.slice(0, 5)) {
+                const trimmed = line.trim();
+                if (trimmed.length >= 5 && trimmed.length <= 40) {
+                    return trimmed;
+                }
+            }
+            
+            return 'Unknown Product';
+        }
+
         // Display Results
         function displayResults(data) {
+            // Show product name
+            if (data.productName) {
+                document.getElementById('productHeader').style.display = 'block';
+                document.getElementById('productName').textContent = data.productName;
+            }
+
             // Show sections
             resultsSection.classList.add('active');
             imagePanel.style.display = 'block';
@@ -1740,6 +1844,7 @@
         // Reset App
         function resetApp() {
             resultsSection.classList.remove('active');
+            document.getElementById('productHeader').style.display = 'none';
             imagePanel.style.display = 'none';
             scorePanel.style.display = 'none';
             document.getElementById('concerningPanel').style.display = 'none';
