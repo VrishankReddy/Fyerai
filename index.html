@@ -1227,12 +1227,21 @@
             reader.onload = async (e) => {
                 resultImage.src = e.target.result;
                 
-                // Simulate AI processing time
-                await new Promise(resolve => setTimeout(resolve, 2000));
-                
-                // Analyze the image data
-                const analysis = await generateAnalysis(e.target.result);
-                displayResults(analysis);
+                try {
+                    // Analyze the image data
+                    const analysis = await generateAnalysis(e.target.result);
+                    displayResults(analysis);
+                    
+                } catch (error) {
+                    console.error('Analysis error:', error);
+                    
+                    if (error.message === 'NOT_FOOD_LABEL') {
+                        // Show error message for non-food images
+                        alert('⚠️ No Food Label Detected\n\nPlease upload an image of a food package with visible ingredient list or nutrition facts.\n\nMake sure:\n✓ Image shows ingredient list clearly\n✓ Text is readable and not blurry\n✓ Lighting is good');
+                    } else {
+                        alert('Error analyzing image. Please try again with a clearer photo of the ingredient list.');
+                    }
+                }
                 
                 loadingScreen.classList.remove('active');
             };
@@ -1429,10 +1438,24 @@
             // Categorize ingredients by risk
             const harmful = foundIngredients.filter(i => i.risk === 'high' || i.risk === 'medium');
             const good = foundIngredients.filter(i => i.risk === 'good');
+            const neutral = foundIngredients.filter(i => i.risk === 'low');
+            
+            // If NO ingredients detected at all, give neutral score
+            if (foundIngredients.length === 0) {
+                totalScore = 70; // Neutral score when nothing detected
+            }
             
             // Generate insights based on what was found
             const insights = generateInsights(foundIngredients, totalScore);
             const alternatives = generateAlternatives(harmful, totalScore);
+            
+            // Create detailed summary
+            console.log('Analysis Summary:');
+            console.log('- Total ingredients detected:', foundIngredients.length);
+            console.log('- Harmful/concerning:', harmful.length);
+            console.log('- Beneficial:', good.length);
+            console.log('- Neutral:', neutral.length);
+            console.log('- Final score:', totalScore);
             
             return {
                 score: totalScore,
@@ -1440,22 +1463,24 @@
                 concerning: formatConcerningIngredients(harmful),
                 insights: insights,
                 alternatives: alternatives,
-                foundCount: foundIngredients.length
+                foundCount: foundIngredients.length,
+                allIngredients: foundIngredients
             };
         }
 
         function formatConcerningIngredients(ingredients) {
             if (ingredients.length === 0) {
                 return [{
-                    name: 'No Major Concerns Detected',
-                    desc: 'Based on common ingredient patterns, no highly concerning ingredients were identified. However, always check the full ingredient list.',
+                    name: 'No Harmful Ingredients Detected',
+                    desc: 'Based on the ingredient analysis, no major concerning ingredients were identified in this product. This is a positive indicator of product quality.',
                     risk: 'low'
                 }];
             }
             
+            // Show each detected harmful ingredient with its specific description
             return ingredients.map(ing => ({
                 name: ing.name,
-                desc: getIngredientDescription(ing),
+                desc: ing.desc || getIngredientDescription(ing),
                 risk: ing.risk
             }));
         }
@@ -1558,20 +1583,79 @@
 
         // Main Analysis Function with Real Image Processing
         async function generateAnalysis(imageData) {
-            // Step 1: Extract text from image (simulated)
+            // Step 1: Extract text from image using OCR
             const extractedText = await extractTextFromImage(imageData);
             
-            // Step 2: Analyze using ingredient database
+            console.log('Extracted Text:', extractedText);
+            
+            // Step 2: Validate that this is a food label
+            const isFoodLabel = validateFoodLabel(extractedText);
+            
+            if (!isFoodLabel) {
+                throw new Error('NOT_FOOD_LABEL');
+            }
+            
+            // Step 3: Analyze using ingredient database
             const analysis = analyzeIngredients(extractedText);
             
-            // Step 3: Return formatted results
+            // Step 4: Return formatted results (score already 0-100)
             return {
-                score: (analysis.score / 100) * 10, // Convert to 1-10 scale
+                score: analysis.score, // Keep as 0-100
                 rating: analysis.rating,
                 concerning: analysis.concerning,
                 insights: analysis.insights,
-                alternatives: analysis.alternatives
+                alternatives: analysis.alternatives,
+                detectedIngredients: analysis.foundCount
             };
+        }
+
+        // Validate if image contains a food label
+        function validateFoodLabel(text) {
+            const textLower = text.toLowerCase();
+            
+            // Food label indicators
+            const foodLabelKeywords = [
+                'ingredients',
+                'ingredient:',
+                'contains:',
+                'nutrition facts',
+                'nutrition information',
+                'serving size',
+                'calories',
+                'total fat',
+                'protein',
+                'carbohydrate',
+                'allergen',
+                'may contain',
+                'manufactured by',
+                'distributed by',
+                'best before',
+                'use by',
+                'exp date',
+                'enriched',
+                'vitamin',
+                'mineral',
+                'preservative'
+            ];
+            
+            // Check if text contains food-related keywords
+            const hasKeywords = foodLabelKeywords.some(keyword => 
+                textLower.includes(keyword)
+            );
+            
+            // Check if text contains ingredient-like words
+            const commonIngredients = [
+                'flour', 'sugar', 'salt', 'water', 'oil', 'milk', 'egg',
+                'wheat', 'corn', 'soy', 'rice', 'butter', 'cheese',
+                'sodium', 'citric acid', 'natural flavor'
+            ];
+            
+            const hasIngredients = commonIngredients.filter(ing => 
+                textLower.includes(ing)
+            ).length >= 2; // At least 2 common ingredients
+            
+            // Must have keywords OR multiple ingredients
+            return hasKeywords || hasIngredients;
         }
 
         // Display Results
@@ -1584,12 +1668,13 @@
             document.getElementById('insightsPanel').style.display = 'block';
             document.getElementById('alternativesPanel').style.display = 'block';
 
-            // Convert score back to 0-100 for display
-            const displayScore = Math.round(data.score * 10);
+            // Score is already 0-100, use it directly
+            const displayScore = Math.round(data.score);
             
-            // Animate score
+            // Animate score circle (convert to 0-10 scale for circle animation)
             const circumference = 2 * Math.PI * 105;
-            const offset = circumference - (data.score / 10) * circumference;
+            const normalizedScore = displayScore / 10; // Convert 100-scale to 10-scale for circle
+            const offset = circumference - (normalizedScore / 10) * circumference;
             
             setTimeout(() => {
                 scoreCircle.style.strokeDashoffset = offset;
